@@ -1,0 +1,14 @@
+# Python (Backend)
+__pycache__/
+*.pyc
+.env
+matebook.db
+uploads/
+.venv/
+
+# Node (Frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.netlify/
+.DS_Store
