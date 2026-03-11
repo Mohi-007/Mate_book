@@ -1,8 +1,4 @@
-import os
-import sys
-import traceback
 from flask import Flask, jsonify
-from flask_cors import CORS
 
 # Vercel structure check:
 # /api/index.py
@@ -17,7 +13,6 @@ if backend_path not in sys.path:
 def get_app():
     # Fallback/Diagnostic app base
     fallback_app = Flask(__name__)
-    CORS(fallback_app)
 
     def add_diag_routes(target_app, error=None):
         @target_app.route("/api/health")
