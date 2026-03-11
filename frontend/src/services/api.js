@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://matebookweb.vercel.app/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://mate-book.vercel.app/api';
 export const API_BASE_URL = API_URL.replace('/api', '');
+const NEWS_PROXY_URL = 'https://mate-book.vercel.app/api/news-proxy';
 
 const api = axios.create({
   baseURL: API_URL,
