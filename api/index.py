@@ -27,10 +27,18 @@ def get_app():
 
         @target_app.route("/api/diag")
         def diag():
+            task_dir = "/var/task"
+            backend_ls = []
+            try:
+                backend_ls = os.listdir(os.path.join(task_dir, "backend"))
+            except:
+                pass
+                
             return jsonify({
                 "error": str(error) if error else None,
                 "path": sys.path,
-                "env_vars": {k: "SET" for k in os.environ},
+                "task_ls": os.listdir(task_dir) if os.path.exists(task_dir) else "missing",
+                "backend_ls": backend_ls,
                 "cwd": os.getcwd()
             }), 200
         return target_app
