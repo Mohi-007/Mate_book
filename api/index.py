@@ -12,11 +12,17 @@ backend_dir = os.path.join(parent_dir, 'backend')
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
-app = None
+app = Flask(__name__)
+
+@app.route("/api/ping")
+def ping():
+    return jsonify({"status": "pong", "message": "Vercel function is running"}), 200
 
 try:
     from app import create_app
-    app = create_app()
+    # Instead of creating a new app, we can try to merge routes or just replace 'app'
+    flask_app = create_app()
+    app = flask_app
 except Exception as e:
     error_msg = str(e)
     tb = traceback.format_exc()
