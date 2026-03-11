@@ -1,8 +1,8 @@
-import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'https://mate-book.vercel.app/api';
-export const API_BASE_URL = API_URL.replace('/api', '');
-const NEWS_PROXY_URL = 'https://mate-book.vercel.app/api/news-proxy';
+// For production on Netlify, use the relative /api path which is proxied to Vercel
+export const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000/api' 
+  : '/api';
+const NEWS_PROXY_URL = '/api/news-proxy';
 
 const api = axios.create({
   baseURL: API_URL,
