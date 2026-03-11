@@ -37,18 +37,19 @@ export default function LoginPage() {
   return (
     <div className="auth-container">
       <div className="auth-card animate-fade">
-        <h1>📘 MateBook</h1>
-        <p className="text-center text-muted mb-lg">Welcome back! Log in to continue.</p>
+        <div className="text-center mb-xl">
+          <h1 className="brand-logo">📘 MateBook</h1>
+          <p className="text-muted">Welcome back! Sign in to continue</p>
+        </div>
 
-        {error && <div className="form-error">{error}</div>}
+        {error && <div className="form-error mb-lg">{error}</div>}
 
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="form-group">
-            <label>Email or Username</label>
+        <form onSubmit={handleSubmit} noValidate className="auth-form">
+          <div className="form-group-simple">
             <input
-              className="input"
+              className="input-premium"
               type="text"
-              placeholder="your@email.com or username"
+              placeholder="📧 Email or Username"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               inputMode="email"
@@ -56,31 +57,31 @@ export default function LoginPage() {
               required
             />
           </div>
-          <div className="form-group">
-            <label>Password</label>
+          <div className="form-group-simple">
             <input
-              className="input"
+              className="input-premium"
               type="password"
-              placeholder="••••••••"
+              placeholder="🔒 Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
-          <button className="btn btn-primary w-full" type="submit" disabled={loading}>
-            {loading ? 'Signing in...' : '🚀 Sign In'}
+          
+          <button className="btn btn-primary btn-lg w-full mt-md" type="submit" disabled={loading}>
+            {loading ? 'Processing...' : '🚀 Sign In'}
           </button>
         </form>
 
-        <p className="text-center mt-lg text-sm">
-          Don't have an account? <Link to="/register">Sign Up</Link>
-        </p>
-
-        <div className="text-center mt-md text-xs text-muted" style={{
-          padding: '8px', background: 'var(--bg)', border: '2px solid var(--black)',
-          borderRadius: 'var(--radius)',
-        }}>
-          <strong>Demo Admin:</strong> admin@matebook.com / admin123
+        <div className="auth-footer">
+          <p>
+            Don't have an account? <Link to="/register" className="link-bold">Sign Up Free</Link>
+          </p>
+          
+          <div className="demo-box mt-xl">
+            <p className="text-xs text-muted mb-xs">DEMO ACCESS</p>
+            <code>admin@matebook.com / admin123</code>
+          </div>
         </div>
       </div>
     </div>

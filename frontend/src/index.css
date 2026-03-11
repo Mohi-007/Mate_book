@@ -949,6 +949,58 @@ img { max-width: 100%; display: block; }
   border-radius: var(--radius);
 }
 
+/* ── Premium Auth Enhancements ──────────────── */
+.brand-logo {
+  font-size: 2.5rem;
+  letter-spacing: -0.04em;
+  margin-bottom: var(--space-xs);
+}
+.input-premium {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 1rem;
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+  box-shadow: 2px 2px 0px var(--black);
+  transition: var(--transition);
+}
+.input-premium:focus {
+  outline: none;
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px var(--black);
+  border-color: var(--black);
+}
+.form-group-simple {
+  margin-bottom: var(--space-md);
+}
+.auth-form {
+  margin-top: var(--space-xl);
+}
+.auth-footer {
+  text-align: center;
+  margin-top: var(--space-lg);
+  font-size: 0.9rem;
+}
+.link-bold {
+  font-weight: 800;
+  color: var(--pink);
+  text-decoration: underline;
+}
+.demo-box {
+  background: #fff;
+  border: 2px dashed var(--black);
+  padding: var(--space-md);
+  border-radius: var(--radius);
+  display: inline-block;
+}
+.demo-box code {
+  color: var(--blue);
+  font-weight: 700;
+}
+.mb-xl { margin-bottom: var(--space-xl); }
+.btn-lg { padding: 14px 24px; font-size: 1rem; }
+
 /* ── Empty State ───────────────────────────────── */
 .empty-state {
   text-align: center;
