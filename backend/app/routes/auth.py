@@ -53,6 +53,15 @@ def register():
 def health_check():
     return {"status": "ok", "message": "Matebook Backend is alive!"}, 200
 
+@auth_bp.route("/db-health", methods=["GET"])
+def db_health_check():
+    try:
+        from app.models.user import User
+        count = User.query.count()
+        return {"status": "ok", "message": f"Database connected. Total users: {count}"}, 200
+    except Exception as e:
+        return {"status": "error", "message": f"Database error: {str(e)}"}, 500
+
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json(silent=True)
