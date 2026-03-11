@@ -26,6 +26,17 @@ def get_app():
         def health_err():
             return jsonify({"status": "error", "message": str(e)}), 500
             
+        @err_app.route("/api/env")
+        def show_env():
+            db_url = os.environ.get("DATABASE_URL", "NOT SET")
+            if "@" in db_url:
+                db_url = db_url.split("@")[1] # Mask password
+            return jsonify({
+                "DATABASE_URL_SET": "DATABASE_URL" in os.environ,
+                "DATABASE_URL_SUFFIX": db_url,
+                "SUPABASE_URL": os.environ.get("SUPABASE_URL", "NOT SET")
+            }), 200
+
         @err_app.route("/", defaults={"path": ""})
         @err_app.route("/<path:path>")
         def catch_all(path):
