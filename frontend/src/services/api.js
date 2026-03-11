@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 // For production on Netlify, use the relative /api path which is proxied to Vercel
 export const API_BASE_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:5000/api' 
@@ -5,7 +7,7 @@ export const API_BASE_URL = window.location.hostname === 'localhost'
 const NEWS_PROXY_URL = '/api/news-proxy';
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
