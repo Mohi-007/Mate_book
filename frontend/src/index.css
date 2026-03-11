@@ -918,7 +918,7 @@ img { max-width: 100%; display: block; }
   background: var(--card-bg);
   border: var(--border-thick);
   box-shadow: var(--shadow-lg);
-  padding: var(--space-2xl);
+  padding: clamp(var(--space-lg), 5vw, var(--space-2xl));
   width: 100%;
   max-width: 440px;
   border-radius: var(--radius);
