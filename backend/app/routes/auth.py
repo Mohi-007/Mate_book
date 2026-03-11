@@ -62,6 +62,18 @@ def db_health_check():
     except Exception as e:
         return {"status": "error", "message": f"Database error: {str(e)}"}, 500
 
+@auth_bp.route("/env", methods=["GET"])
+def env_diag():
+    db_url = os.environ.get("DATABASE_URL", "NOT SET")
+    if "@" in db_url:
+        db_url = db_url.split("@")[1]
+    return {
+        "DATABASE_URL_SET": "DATABASE_URL" in os.environ,
+        "DATABASE_URL_SUFFIX": db_url,
+        "SUPABASE_URL": os.environ.get("SUPABASE_URL", "NOT SET"),
+        "IS_VERCEL": "VERCEL" in os.environ
+    }, 200
+
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json(silent=True)
