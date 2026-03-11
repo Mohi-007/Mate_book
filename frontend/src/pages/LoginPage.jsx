@@ -51,6 +51,8 @@ export default function LoginPage() {
               placeholder="your@email.com or username"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
+              inputMode="email"
+              autoComplete="username"
               required
             />
           </div>

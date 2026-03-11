@@ -1,11 +1,9 @@
 import os
 import sys
-import traceback
 from flask import Flask, jsonify
+from flask_cors import CORS
 
-# Vercel structure check:
-# /api/index.py
-# /backend/app/__init__.py
+# Path setup for Vercel functions
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 backend_path = os.path.join(parent_dir, 'backend')
@@ -14,42 +12,25 @@ if backend_path not in sys.path:
     sys.path.insert(0, backend_path)
 
 def get_app():
-    # Fallback/Diagnostic app base
-    fallback_app = Flask(__name__)
-
-    def add_diag_routes(target_app, error=None):
-        @target_app.route("/api/health")
-        @target_app.route("/api/auth/health")
-        def health():
-            if error:
-                return jsonify({"status": "error", "message": str(error)}), 500
-            return jsonify({"status": "ok", "message": "App is running"}), 200
-
-        @target_app.route("/api/diag")
-        def diag():
-            task_dir = "/var/task"
-            backend_ls = []
-            try:
-                backend_ls = os.listdir(os.path.join(task_dir, "backend"))
-            except:
-                pass
-                
-            return jsonify({
-                "error": str(error) if error else None,
-                "path": sys.path,
-                "task_ls": os.listdir(task_dir) if os.path.exists(task_dir) else "missing",
-                "backend_ls": backend_ls,
-                "cwd": os.getcwd()
-            }), 200
-        return target_app
-
     try:
         from app import create_app
         flask_app = create_app()
-        return add_diag_routes(flask_app)
+        return flask_app
     except Exception as e:
-        print(f"FAILED TO LOAD APP: {e}")
-        traceback.print_exc()
-        return add_diag_routes(fallback_app, error=e)
+        # Fallback app for critical startup errors
+        err_app = Flask(__name__)
+        CORS(err_app)
+        
+        @err_app.route("/api/health")
+        @err_app.route("/api/auth/health")
+        def health_err():
+            return jsonify({"status": "error", "message": str(e)}), 500
+            
+        @err_app.route("/", defaults={"path": ""})
+        @err_app.route("/<path:path>")
+        def catch_all(path):
+            return jsonify({"error": "App failed to initialize", "details": str(e)}), 503
+            
+        return err_app
 
 app = get_app()
