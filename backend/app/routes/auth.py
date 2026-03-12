@@ -57,10 +57,24 @@ def health_check():
 def db_health_check():
     try:
         from app.models.user import User
+        from app.extensions import db
+        from sqlalchemy import text
+        # Test raw connection first
+        db.session.execute(text("SELECT 1"))
         count = User.query.count()
         return {"status": "ok", "message": f"Database connected. Total users: {count}"}, 200
     except Exception as e:
-        return {"status": "error", "message": f"Database error: {str(e)}"}, 500
+        import traceback
+        return {"status": "error", "message": str(e), "trace": traceback.format_exc()[-500:]}, 500
+
+@auth_bp.route("/db-info", methods=["GET"])
+def db_info():
+    """Show runtime DB connection string (masked) to verify port fix."""
+    from flask import current_app
+    db_uri = current_app.config.get("SQLALCHEMY_DATABASE_URI", "NOT SET")
+    if "@" in db_uri:
+        db_uri = db_uri.split("@")[1][:80]  # mask password, show host:port/db
+    return {"runtime_db_uri_suffix": db_uri, "is_vercel": os.environ.get("VERCEL") is not None}, 200
 
 @auth_bp.route("/env", methods=["GET"])
 def env_diag():
