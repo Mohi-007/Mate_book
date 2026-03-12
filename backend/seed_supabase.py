@@ -14,8 +14,8 @@ def seed():
         print("Creating tables on Supabase...")
         db.create_all()
 
-        # Check if admin already exists
-        admin = User.query.filter_by(username="admin").first()
+        # Check if admin already exists by email
+        admin = User.query.filter_by(email="admin@matebook.com").first()
         if not admin:
             print("Creating admin user...")
             admin = User(
@@ -29,7 +29,15 @@ def seed():
             db.session.commit()
             print("Admin user created successfully!")
         else:
-            print("Admin user already exists.")
+            # Reset password and username to match demo credentials
+            print(f"Admin user exists (username: {admin.username}). Resetting password and username...")
+            admin.username = "admin"
+            admin.password_hash = bcrypt.generate_password_hash("admin123").decode("utf-8")
+            admin.is_admin = True
+            admin.is_verified = True
+            db.session.commit()
+            print("Admin credentials reset: admin@matebook.com / admin123")
 
 if __name__ == "__main__":
     seed()
+

@@ -1031,30 +1031,105 @@ img { max-width: 100%; display: block; }
   to { transform: rotate(360deg); }
 }
 
+/* ── Mobile Bottom Navigation ──────────────────── */
+.bottom-nav {
+  display: none; /* Hidden on desktop */
+}
+.mobile-top-actions {
+  display: none; /* Hidden on desktop */
+}
+
 /* ── Responsive ────────────────────────────────── */
 @media (max-width: 1024px) {
   .app-layout {
     grid-template-columns: 1fr;
+    padding-bottom: 72px; /* Space for bottom nav */
   }
   .sidebar-left, .sidebar-right {
     display: none;
   }
   .chat-layout {
     grid-template-columns: 1fr;
+    height: calc(100vh - 64px - 72px); /* Account for bottom nav */
   }
-  /* On mobile, if active-conv-open class is NOT present, show sidebar, hide main */
   .chat-sidebar {
     display: block;
   }
   .chat-main {
     display: none;
   }
-  /* When conversation is open, flip visibility */
   .chat-layout.active-conv-open .chat-sidebar {
     display: none;
   }
   .chat-layout.active-conv-open .chat-main {
     display: flex;
+  }
+
+  /* Show bottom nav on tablet/mobile */
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--card-bg);
+    border-top: var(--border-thick);
+    box-shadow: 0 -2px 0 var(--black);
+    height: 68px;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 var(--space-xs);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 10px;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    transition: var(--transition);
+    min-width: 56px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bottom-nav-item.active {
+    color: var(--black);
+    background: var(--accent);
+    border: 2px solid var(--black);
+    box-shadow: 2px 2px 0 var(--black);
+  }
+  .bottom-nav-item:hover {
+    text-decoration: none;
+  }
+  .bottom-nav-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+  .bottom-nav-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+  }
+
+  /* Hide desktop nav links, show mobile top actions */
+  .desktop-nav {
+    display: none;
+  }
+  .mobile-top-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  /* Main content needs bottom padding for bottom nav */
+  .main-content {
+    padding-bottom: 80px;
   }
 }
 
@@ -1070,22 +1145,95 @@ img { max-width: 100%; display: block; }
 
 @media (max-width: 768px) {
   .navbar {
-    padding: 0 var(--space-md);
+    padding: 0 var(--space-sm);
+    height: 56px;
+  }
+  .navbar-brand {
+    font-size: 1.2rem;
   }
   .nav-link span {
     display: none;
   }
+  .auth-container {
+    padding: var(--space-md);
+  }
   .auth-card {
-    padding: var(--space-lg);
+    padding: var(--space-md);
+    box-shadow: var(--shadow);
+    border-width: 3px;
+  }
+  .brand-logo {
+    font-size: 2rem;
+  }
+  .input-premium {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+  .btn-lg {
+    padding: 12px 20px;
+    font-size: 0.95rem;
   }
   .profile-info {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
+  .cover-photo {
+    height: 160px;
+  }
   .debate-options {
     grid-template-columns: 1fr;
   }
+  .post-actions {
+    flex-wrap: wrap;
+  }
+  .post-action-btn {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.1rem; }
+
+  /* Better touch targets */
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .btn-sm {
+    min-height: 36px;
+    min-width: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 var(--space-sm);
+  }
+  .stories-bar {
+    padding: var(--space-sm) 0;
+  }
+  .create-post {
+    padding: var(--space-sm);
+  }
+  .post-header {
+    padding: var(--space-sm);
+  }
+  .post-content {
+    padding: 0 var(--space-sm) var(--space-sm);
+  }
+  .card {
+    padding: var(--space-md);
+    box-shadow: 3px 3px 0px var(--black);
+  }
+  .analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .profile-stats {
+    gap: var(--space-md);
+    padding: 0 var(--space-sm);
+  }
+  .stat-value { font-size: 1.2rem; }
 }
 
 /* ── Animations ────────────────────────────────── */

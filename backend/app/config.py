@@ -4,24 +4,43 @@ from datetime import timedelta
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
+def _get_database_url():
+    """Get and fix DATABASE_URL for the current environment."""
+    db_url = os.environ.get("DATABASE_URL", "")
+    is_vercel = "VERCEL" in os.environ
+
+    if not db_url:
+        if is_vercel:
+            return "postgresql://missing_url_check_vercel_env_vars"
+        return f"sqlite:///{os.path.join(BASE_DIR, 'matebook.db')}"
+
+    # For Vercel serverless: use Supabase connection pooler (port 6543)
+    # Direct connections (port 5432) are unreliable in serverless environments
+    if is_vercel and ":5432/" in db_url:
+        db_url = db_url.replace(":5432/", ":6543/")
+
+    # Ensure sslmode is set for cloud PostgreSQL
+    if "postgresql" in db_url and "sslmode" not in db_url:
+        separator = "&" if "?" in db_url else "?"
+        db_url = f"{db_url}{separator}sslmode=require"
+
+    return db_url
+
+
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "super-secret-dev-key-change-in-prod")
     IS_VERCEL = "VERCEL" in os.environ
 
     # Database — Supabase PostgreSQL or local SQLite fallback
-    # On Vercel, we MUST have a DATABASE_URL
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
-    if not SQLALCHEMY_DATABASE_URI:
-        if IS_VERCEL:
-             # This will still likely fail if used, but at least it won't crash on startup trying to write to disk
-            SQLALCHEMY_DATABASE_URI = "postgresql://missing_url_check_vercel_env_vars"
-        else:
-            SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASE_DIR, 'matebook.db')}"
+    SQLALCHEMY_DATABASE_URI = _get_database_url()
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
-        "pool_recycle": 300,
+        "pool_recycle": 280,
+        "pool_size": 2,
+        "max_overflow": 3,
+        "pool_timeout": 10,
     }
 
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "super-secret-jwt-dev-key-change-in-prod-minimum-32")
