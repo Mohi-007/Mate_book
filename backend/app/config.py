@@ -15,11 +15,6 @@ def _get_database_url():
             return "postgresql://missing_url_check_vercel_env_vars"
         return f"sqlite:///{os.path.join(BASE_DIR, 'matebook.db')}"
 
-    # For Vercel serverless: use Supabase connection pooler (port 6543)
-    # Direct connections (port 5432) are unreliable in serverless environments
-    if is_vercel and ":5432/" in db_url:
-        db_url = db_url.replace(":5432/", ":6543/")
-
     # Ensure sslmode is set for cloud PostgreSQL
     if "postgresql" in db_url and "sslmode" not in db_url:
         separator = "&" if "?" in db_url else "?"
@@ -43,6 +38,10 @@ class Config:
         SQLALCHEMY_ENGINE_OPTIONS = {
             "pool_pre_ping": True,
             "poolclass": NullPool,
+            "connect_args": {
+                "sslmode": "require",
+                "connect_timeout": 10,
+            },
         }
     else:
         SQLALCHEMY_ENGINE_OPTIONS = {
