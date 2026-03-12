@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+from sqlalchemy.pool import NullPool
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -35,13 +36,19 @@ class Config:
     SQLALCHEMY_DATABASE_URI = _get_database_url()
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        "pool_pre_ping": True,
-        "pool_recycle": 280,
-        "pool_size": 2,
-        "max_overflow": 3,
-        "pool_timeout": 10,
-    }
+
+    # On Vercel serverless, use NullPool (no persistent connection pool)
+    # Each invocation creates and disposes connections as needed
+    if IS_VERCEL:
+        SQLALCHEMY_ENGINE_OPTIONS = {
+            "pool_pre_ping": True,
+            "poolclass": NullPool,
+        }
+    else:
+        SQLALCHEMY_ENGINE_OPTIONS = {
+            "pool_pre_ping": True,
+            "pool_recycle": 280,
+        }
 
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "super-secret-jwt-dev-key-change-in-prod-minimum-32")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
